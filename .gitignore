@@ -131,3 +131,4 @@ dmypy.json
 .idea
 .DS_Store
 test_local_select.py
+.pytest_cache
