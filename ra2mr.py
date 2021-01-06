@@ -7,10 +7,20 @@ from luigi.mock import MockTarget
 import radb
 import radb.ast
 import radb.parse
+import re
 
 '''
 Control where the input data comes from, and where output data should go.
 '''
+
+
+def extract_cond(cond):
+    """returns a list of tuple(s) each tuple contains the 2 terms of a condition"""
+    condition = re.sub("and", "", str(cond))
+    cond_list = re.findall(r"[\w.\w]+[\w]", condition)
+    n = len(cond_list)
+    return [(cond_list[i], cond_list[i + 1]) for i in range(0, n, 2)]
+
 
 
 class ExecEnv(Enum):
@@ -173,7 +183,10 @@ class SelectTask(RelAlgQueryTask):
         condition = radb.parse.one_statement_from_string(self.querystring).cond
 
         ''' ...................... fill in your code below ........................'''
-
+        # print(json_tuple)
+        # cond_list = extract_cond(condition)
+        # for c1, c2 in cond_list:
+        #     if json_tuple.get()
         yield ("foo", "bar")
 
         ''' ...................... fill in your code above ........................'''
