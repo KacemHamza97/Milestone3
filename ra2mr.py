@@ -14,13 +14,32 @@ Control where the input data comes from, and where output data should go.
 '''
 
 
-def extract_cond(cond):
-    """returns a list of tuple(s) each tuple contains the 2 terms of a condition"""
-    condition = re.sub("and", "", str(cond))
-    cond_list = re.findall(r"[\w.\w]+[\w]", condition)
-    n = len(cond_list)
-    return [(cond_list[i], cond_list[i + 1]) for i in range(0, n, 2)]
+def get_table(ra):
+    if isinstance(ra, radb.ast.Select):
+        if isinstance(ra.inputs[0], radb.ast.RelRef):
+            return ra.inputs[0].rel
+        else:
+            return ra.inputs[0].relname, ra.inputs[0].inputs[0].rel
 
+
+def extract_cond(table_name, cond):
+    """returns a list of tuple(s) each tuple contains the 2 terms of a condition"""
+
+    condition = re.sub("and", "", str(cond))
+    if isinstance(table_name, tuple):
+        condition = re.sub(table_name[0] + '.', table_name[1] + '.', condition)
+        tab_name = table_name[1]
+    else:
+        tab_name = table_name
+
+    cond_list = re.findall(r"[\w.\w]+[\w]+", condition)
+    L = []
+    n = len(cond_list)
+    for i in range(0, n - 1, 2):
+        e1 = tab_name + '.' + cond_list[i] if cond_list[i].count('.') == 0 else cond_list[i]
+        e2 = cond_list[i + 1]
+        L.append((e1, e2))
+    return L
 
 
 class ExecEnv(Enum):
@@ -180,14 +199,23 @@ class SelectTask(RelAlgQueryTask):
         relation, tuple = line.split('\t')
         json_tuple = json.loads(tuple)
 
-        condition = radb.parse.one_statement_from_string(self.querystring).cond
+        ra = radb.parse.one_statement_from_string(self.querystring)
+        condition = ra.cond
 
         ''' ...................... fill in your code below ........................'''
-        # print(json_tuple)
-        # cond_list = extract_cond(condition)
-        # for c1, c2 in cond_list:
-        #     if json_tuple.get()
-        yield ("foo", "bar")
+        table_name = get_table(ra)
+        tab_name = table_name[1] if type(table_name) == tuple else table_name
+
+        if relation == tab_name:
+            cond_list = extract_cond(table_name, condition)
+            test = True
+            for c1, c2 in cond_list:
+                if json_tuple.get(c1, False) is not False and json_tuple[c1] != c2:
+                    test = False
+                    break
+
+            if test:
+                yield line
 
         ''' ...................... fill in your code above ........................'''
 
