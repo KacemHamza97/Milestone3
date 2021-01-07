@@ -15,6 +15,7 @@ Control where the input data comes from, and where output data should go.
 
 
 def sort_cond(term):
+    """inverse the cond a=b to b=a if a is not AtteRef and b is AtteRef and """
     if isinstance(term.inputs[1], radb.ast.AttrRef) and not isinstance(term.inputs[0], radb.ast.AttrRef):
         return radb.ast.ValExprBinaryOp(term.inputs[1], radb.ast.sym.EQ, term.inputs[0])
     else:
