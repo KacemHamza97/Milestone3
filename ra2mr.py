@@ -14,29 +14,45 @@ Control where the input data comes from, and where output data should go.
 '''
 
 
+def sort_cond(term):
+    if isinstance(term.inputs[1], radb.ast.AttrRef) and not isinstance(term.inputs[0], radb.ast.AttrRef):
+        return radb.ast.ValExprBinaryOp(term.inputs[1], radb.ast.sym.EQ, term.inputs[0])
+    else:
+        return term
+
+
+def clean_cond(cond):
+    """this function insure condition commutativity  a=b <=> b=a"""
+    if not isinstance(cond.inputs[0], radb.ast.ValExprBinaryOp):
+        return sort_cond(cond)
+    else:
+        return radb.ast.ValExprBinaryOp(clean_cond(cond.inputs[0]), radb.ast.sym.AND, sort_cond(cond.inputs[1]))
+
+
+def clean_select(ra):
+    """select consistent with condition commutation"""
+    return radb.ast.Select(clean_cond(ra.cond), ra.inputs[0])
+
+
 def get_table(ra):
+    """returns a tuple (relname,rel)"""
     if isinstance(ra, radb.ast.Select):
         if isinstance(ra.inputs[0], radb.ast.RelRef):
             return ra.inputs[0].rel
         else:
-            return ra.inputs[0].relname, ra.inputs[0].inputs[0].rel
+            return ra.inputs[0].inputs[0].rel
+    if isinstance(ra, radb.ast.Rename):
+        return ra.relname, ra.inputs[0].rel
 
 
 def extract_cond(table_name, cond):
     """returns a list of tuple(s) each tuple contains the 2 terms of a condition"""
-
     condition = re.sub("and", "", str(cond))
-    if isinstance(table_name, tuple):
-        condition = re.sub(table_name[0] + '.', table_name[1] + '.', condition)
-        tab_name = table_name[1]
-    else:
-        tab_name = table_name
-
-    cond_list = re.findall(r"[\w.\w]+[\w]+", condition)
+    cond_list = re.findall(r"[\w.\w]+[\w]|[\d.]+", condition)
     L = []
     n = len(cond_list)
     for i in range(0, n - 1, 2):
-        e1 = tab_name + '.' + cond_list[i] if cond_list[i].count('.') == 0 else cond_list[i]
+        e1 = table_name + "." + cond_list[i] if cond_list[i].count(".") == 0 else cond_list[i]
         e2 = cond_list[i + 1]
         L.append((e1, e2))
     return L
@@ -200,24 +216,26 @@ class SelectTask(RelAlgQueryTask):
         json_tuple = json.loads(tuple)
 
         ra = radb.parse.one_statement_from_string(self.querystring)
+        ra = clean_select(ra)
         condition = ra.cond
 
         ''' ...................... fill in your code below ........................'''
-        table_name = get_table(ra)
-        tab_name = table_name[1] if type(table_name) == tuple else table_name
-
-        if relation == tab_name:
+        relation_test = get_table(ra)
+        print(relation_test)
+        if relation == relation_test:
+            first_key = list(json_tuple.keys())[0]
+            table_name = first_key[:first_key.index(".")]
             cond_list = extract_cond(table_name, condition)
             test = True
             for c1, c2 in cond_list:
-                if json_tuple.get(c1, False) is not False and json_tuple[c1] != c2:
+                if json_tuple.get(c1, False) is not False and str(json_tuple[c1]) != c2:
                     test = False
                     break
 
             if test:
-                yield line
+                yield (relation, tuple)
 
-        ''' ...................... fill in your code above ........................'''
+    ''' ...................... fill in your code above ........................'''
 
 
 class RenameTask(RelAlgQueryTask):
@@ -232,11 +250,18 @@ class RenameTask(RelAlgQueryTask):
         relation, tuple = line.split('\t')
         json_tuple = json.loads(tuple)
 
-        raquery = radb.parse.one_statement_from_string(self.querystring)
+        ra = radb.parse.one_statement_from_string(self.querystring)
+        rename, real_name = get_table(ra)
+        if real_name == relation:
+            d = {}
+            key_list = json_tuple.keys()
+            new_key_list = [e.replace(relation + ".", rename + ".") for e in key_list]
+            values_list = json_tuple.values()
+            d = {x: y for x, y in zip(new_key_list, values_list)}
+            res = json.dumps(d)
+            yield (relation, res)
 
         ''' ...................... fill in your code below ........................'''
-
-        yield ("foo", "bar")
 
         ''' ...................... fill in your code above ........................'''
 
@@ -257,14 +282,14 @@ class ProjectTask(RelAlgQueryTask):
 
         ''' ...................... fill in your code below ........................'''
 
-        yield ("foo", "bar")
+        yield ("fooll", "barll")
 
         ''' ...................... fill in your code above ........................'''
 
     def reducer(self, key, values):
         ''' ...................... fill in your code below ........................'''
 
-        yield ("foo", "bar")
+        yield ("fooooo", "barrrr")
 
         ''' ...................... fill in your code above ........................'''
 
