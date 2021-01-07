@@ -222,7 +222,6 @@ class SelectTask(RelAlgQueryTask):
 
         ''' ...................... fill in your code below ........................'''
         relation_test = get_table(ra)
-        print(relation_test)
         if relation == relation_test:
             first_key = list(json_tuple.keys())[0]
             table_name = first_key[:first_key.index(".")]
@@ -280,17 +279,26 @@ class ProjectTask(RelAlgQueryTask):
         json_tuple = json.loads(tuple)
 
         attrs = radb.parse.one_statement_from_string(self.querystring).attrs
+        first_key = list(json_tuple.keys())[0]
+        table_name = first_key[:first_key.index(".")]
 
+        attributes = [table_name + "." + att.name for att in attrs]
+        d = {}
+        for k, v in json_tuple.items():
+            if k in attributes:
+                d[k] = v
+        if len(d) != 0:
+            res = json.dumps(d)
+            yield (relation, res)
         ''' ...................... fill in your code below ........................'''
-
-        yield ("fooll", "barll")
 
         ''' ...................... fill in your code above ........................'''
 
     def reducer(self, key, values):
         ''' ...................... fill in your code below ........................'''
-
-        yield ("fooooo", "barrrr")
+        new_values = set(values)
+        for e in new_values:
+            yield (key, e)
 
         ''' ...................... fill in your code above ........................'''
 
