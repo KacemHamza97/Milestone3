@@ -1,5 +1,7 @@
 from enum import Enum
 import json
+from pprint import pprint
+
 import luigi
 import luigi.contrib.hadoop
 import luigi.contrib.hdfs
@@ -12,6 +14,22 @@ import re
 '''
 Control where the input data comes from, and where output data should go.
 '''
+
+
+def extract_tabname_record(json_tuple):
+    first_key = list(json_tuple.keys())[0]
+    return first_key[:first_key.index(".")]
+
+
+def extract_cond_joint(cond, L):
+    """" returns a list L of condition """
+    if L is None:
+        L = []
+    if isinstance(cond.inputs[0], radb.ast.AttrRef):
+        return L.insert(0, (str(cond.inputs[0]), str(cond.inputs[1])))
+    else:
+        L.insert(0, (str(cond.inputs[1].inputs[0]), str(cond.inputs[1].inputs[1])))
+        return extract_cond_joint(cond.inputs[0], L)
 
 
 def sort_cond(term):
@@ -187,19 +205,37 @@ class JoinTask(RelAlgQueryTask):
 
         raquery = radb.parse.one_statement_from_string(self.querystring)
         condition = raquery.cond
+        res = json.dumps(json_tuple)
+        yield ("join", res)
 
-        ''' ...................... fill in your code below ........................'''
-
-        yield ("foo", "bar")
-
-        ''' ...................... fill in your code above ........................'''
 
     def reducer(self, key, values):
         raquery = radb.parse.one_statement_from_string(self.querystring)
-
-        ''' ...................... fill in your code below ........................'''
-
-        yield ("foo", "bar")
+        condition = raquery.cond
+        L = [json.loads(e) for e in values]
+        list_cond = []
+        extract_cond_joint(condition, list_cond)
+        first_key = list_cond[0][0]
+        table_name1 = first_key[:first_key.index(".")]
+        second_key = first_key = list_cond[0][1]
+        table_name2 = first_key[:second_key.index(".")]
+        joint_list1, joint_list2 = [], []
+        for e in L:
+            if extract_tabname_record(e) == table_name2:
+                joint_list2.append(e)
+            else:
+                joint_list1.append(e)
+        for e1 in joint_list1:
+            for e2 in joint_list2:
+                test = True
+                for c1, c2 in list_cond:
+                    if e1[c1] != e2[c2]: #erooorrrr not always e1[c1] exists
+                        test = False
+                        break
+                if test:
+                    d = {x: y for x, y in zip(list(e1.keys()) + list(e2.keys()), list(e1.values()) + list(e2.values()))}
+                    res = json.dumps(d)
+                    yield ('joint1', res)
 
         ''' ...................... fill in your code above ........................'''
 
@@ -282,7 +318,7 @@ class ProjectTask(RelAlgQueryTask):
         first_key = list(json_tuple.keys())[0]
         table_name = first_key[:first_key.index(".")]
 
-        attributes = [table_name + "." + att.name for att in attrs]
+        attributes = [str(att) if att.rel is not None else table_name + "." + att.name for att in attrs ]
         d = {}
         for k, v in json_tuple.items():
             if k in attributes:

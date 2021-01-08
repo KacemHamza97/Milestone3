@@ -305,7 +305,7 @@ def rule_break_up_selections(ra):
 
 def rule_push_down_selections(ra, dd):
     """push_down selections function """
-    dd["Frequents"] = {}
+    # dd["Frequents"] = {}
     if isinstance(ra, radb.ast.RelRef):
         return ra
     if cross_number(ra) == 0:
@@ -322,7 +322,7 @@ def rule_merge_selections(ra):
     """merge selections function"""
     if isinstance(ra, radb.ast.RelRef):
         return ra
-    if select_number(ra) == 1:
+    if select_number(ra) <= 1:
         return ra
     if isinstance(ra, radb.ast.Select):
         return merge_select(ra)

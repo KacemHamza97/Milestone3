@@ -75,7 +75,7 @@ def select(stmt_tokens, table_names):
                    for attribute in attributes_list]
     n = len(attref_list)
     valexprebinaryop_list = [radb.ast.ValExprBinaryOp(attref_list[i], radb.ast.sym.EQ, attref_list[i + 1]) for i in
-                             range(0, n, 2)]
+                             range(0, n-1, 2)]
     res = valexprebinaryop_list[0]
     n2 = len(valexprebinaryop_list)
     for i in range(1, n2):
