@@ -25,10 +25,11 @@ def extract_cond_joint(cond, L):
     """" returns a list L of condition """
     if L is None:
         L = []
-    if isinstance(cond.inputs[0], radb.ast.AttrRef):
+    if isinstance(cond.inputs[0], radb.ast.AttrRef) and str(cond).count('.') == 2:
         return L.insert(0, (str(cond.inputs[0]), str(cond.inputs[1])))
     else:
-        L.insert(0, (str(cond.inputs[1].inputs[0]), str(cond.inputs[1].inputs[1])))
+        if str(cond.inputs[1]).count('.') == 2:
+            L.insert(0, (str(cond.inputs[1].inputs[0]), str(cond.inputs[1].inputs[1])))
         return extract_cond_joint(cond.inputs[0], L)
 
 
@@ -208,7 +209,6 @@ class JoinTask(RelAlgQueryTask):
         res = json.dumps(json_tuple)
         yield ("join", res)
 
-
     def reducer(self, key, values):
         raquery = radb.parse.one_statement_from_string(self.querystring)
         condition = raquery.cond
@@ -217,8 +217,11 @@ class JoinTask(RelAlgQueryTask):
         extract_cond_joint(condition, list_cond)
         first_key = list_cond[0][0]
         table_name1 = first_key[:first_key.index(".")]
-        second_key = first_key = list_cond[0][1]
-        table_name2 = first_key[:second_key.index(".")]
+        second_key = list_cond[0][1]
+        # print('-' * 100)
+        # pprint(list_cond)
+        # print('-' * 100)
+        table_name2 = second_key[:second_key.index(".")]  # "eroor table_name2 = first_key[:second_key.index(".")] "
         joint_list1, joint_list2 = [], []
         for e in L:
             if extract_tabname_record(e) == table_name2:
@@ -229,7 +232,7 @@ class JoinTask(RelAlgQueryTask):
             for e2 in joint_list2:
                 test = True
                 for c1, c2 in list_cond:
-                    if e1[c1] != e2[c2]: #erooorrrr not always e1[c1] exists
+                    if e1[c1] != e2[c2]:  # erooorrrr not always e1[c1] exists
                         test = False
                         break
                 if test:
@@ -318,7 +321,7 @@ class ProjectTask(RelAlgQueryTask):
         first_key = list(json_tuple.keys())[0]
         table_name = first_key[:first_key.index(".")]
 
-        attributes = [str(att) if att.rel is not None else table_name + "." + att.name for att in attrs ]
+        attributes = [str(att) if att.rel is not None else table_name + "." + att.name for att in attrs]
         d = {}
         for k, v in json_tuple.items():
             if k in attributes:

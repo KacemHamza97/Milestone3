@@ -3,17 +3,17 @@ import radb
 import radb.ast
 import radb.parse
 
-# dd = {}
-# dd["Person"] = {"name": "string", "age": "integer", "gender": "string"}
-# dd["Eats"] = {"name": "string", "pizza": "string"}
-# dd["Serves"] = {"pizzeria": "string", "pizza": "string", "price": "integer"}
+dd = {}
+dd["Person"] = {"name": "string", "age": "integer", "gender": "string"}
+dd["Eats"] = {"name": "string", "pizza": "string"}
+dd["Serves"] = {"pizzeria": "string", "pizza": "string", "price": "integer"}
 
-# "\select_{P.gender='female'} \\rename_{P:*} (Person);"
-# stmt = "\project_{Serves.pizzeria} (\select_{(((Person.name = Eats.name) and (Eats.pizza = Serves.pizza))" \
-#        " and (Eats.pizza = 'mushroom')) and (Serves.price = 11)} ((Person \cross Eats) \cross Serves));"
+
+stmt = "\select_{(((Person.name = Eats.name) and (Eats.pizza = Serves.pizza)) and (Person.age = 16)) and" \
+       " (Serves.pizzeria = 'Little Ceasars')} ((Person \cross Eats) \cross Serves);"
 
 # stmt_result = "Person \join_{Person.name = Eats.name and Person.name = Eats.pizza} \select_{Eats.name = 'Amy'} Eats;"
-# ra = radb.parse.one_statement_from_string(stmt)
+ra = radb.parse.one_statement_from_string(stmt)
 
 # ra_result = radb.parse.one_statement_from_string(stmt_result)
 # print(ra_result)
@@ -193,10 +193,11 @@ def select_rest(rest_list, input):
     if len(rest_list) == 1:
         return radb.ast.Select(res, input)
     elif len(rest_list) > 1:
-        res = radb.ast.Select(res, input)
+        res_input = radb.ast.Select(res, input)
         for i in range(1, len(rest_list)):
-            res = radb.ast.Select(rest_list[i], res)
+            res = radb.ast.Select(rest_list[i], res_input)
         return res
+
 
 
 
@@ -357,15 +358,15 @@ def rule_introduce_joins(ra):
 
 
 #### Test ####
-# print('-' * 100)
-# b = rule_break_up_selections(ra)
-# print(b)
-# print('-' * 100)
-# p = rule_push_down_selections(b, dd)
-# print(p)
-# print('-' * 100)
-# m = rule_merge_selections(p)
-# print(m)
-# print('-' * 100)
-# L = rule_introduce_joins(m)
-# print(L)
+print('-' * 100)
+b = rule_break_up_selections(ra)
+print(b)
+print('-' * 100)
+p = rule_push_down_selections(b, dd)
+print(p)
+print('-' * 100)
+m = rule_merge_selections(p)
+print(m)
+print('-' * 100)
+L = rule_introduce_joins(m)
+print(L)
