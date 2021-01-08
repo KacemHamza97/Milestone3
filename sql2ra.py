@@ -70,7 +70,7 @@ def select(stmt_tokens, table_names):
     """ the select operation """
     where_clause = stmt_tokens[-1] if str(stmt_tokens[-1][0]) == 'where' else None
     where_string = where_clause.value.replace('and', '')
-    attributes_list = re.findall(r"[\w.']+", where_string)[1:]
+    attributes_list = re.findall(r"[\w']+[.|\s][\w']+|[\w']+[\d']+|[\w']+[\w']", where_string[5:])
     attref_list = [radb.ast.AttrRef(rel=extract_rel_name(attribute)['rel'], name=extract_rel_name(attribute)['name'])
                    for attribute in attributes_list]
     n = len(attref_list)

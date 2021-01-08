@@ -7,15 +7,18 @@ import radb.parse
 # dd["Person"] = {"name": "string", "age": "integer", "gender": "string"}
 # dd["Eats"] = {"name": "string", "pizza": "string"}
 # dd["Serves"] = {"pizzeria": "string", "pizza": "string", "price": "integer"}
-#
-# stmt = "\select_{Person.name = Eats.name and Person.name = Eats.pizza and Eats.name = 'Amy'} (Person \cross Eats);"
+
+# "\select_{P.gender='female'} \\rename_{P:*} (Person);"
+# stmt = "\project_{Serves.pizzeria} (\select_{(((Person.name = Eats.name) and (Eats.pizza = Serves.pizza))" \
+#        " and (Eats.pizza = 'mushroom')) and (Serves.price = 11)} ((Person \cross Eats) \cross Serves));"
+
 # stmt_result = "Person \join_{Person.name = Eats.name and Person.name = Eats.pizza} \select_{Eats.name = 'Amy'} Eats;"
 # ra = radb.parse.one_statement_from_string(stmt)
+
 # ra_result = radb.parse.one_statement_from_string(stmt_result)
-# print(ra)
 # print(ra_result)
-# print('=' * 100)
-# print(' ')
+# print('-' * 100)
+# print(ra)
 # print(' ')
 
 
@@ -192,7 +195,9 @@ def select_rest(rest_list, input):
     elif len(rest_list) > 1:
         res = radb.ast.Select(res, input)
         for i in range(1, len(rest_list)):
-            res = radb.ast.Select(res, rest_list[i])
+            res = radb.ast.Select(rest_list[i], res)
+        return res
+
 
 
 def push_step1(s_cond_list, cross_list):
@@ -305,7 +310,7 @@ def rule_break_up_selections(ra):
 
 def rule_push_down_selections(ra, dd):
     """push_down selections function """
-    # dd["Frequents"] = {}
+    dd["Frequents"] = {}
     if isinstance(ra, radb.ast.RelRef):
         return ra
     if cross_number(ra) == 0:
@@ -349,6 +354,7 @@ def rule_introduce_joins(ra):
         return radb.ast.Project(attrs=ra.attrs, input=joint_r(ra.inputs[0]))
     else:
         return joint_r(ra)
+
 
 #### Test ####
 # print('-' * 100)
