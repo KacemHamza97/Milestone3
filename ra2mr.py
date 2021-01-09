@@ -1,6 +1,5 @@
 from enum import Enum
 import json
-from pprint import pprint
 
 import luigi
 import luigi.contrib.hadoop
@@ -14,6 +13,10 @@ import re
 '''
 Control where the input data comes from, and where output data should go.
 '''
+
+
+def cmp(string1, string2):
+    return [c for c in string1 if c.isalnum()] == [c for c in string2 if c.isalnum()]
 
 
 def extract_tabname_record(json_tuple):
@@ -64,7 +67,7 @@ def get_table(ra):
 def extract_cond(table_name, cond):
     """returns a list of tuple(s) each tuple contains the 2 terms of a condition"""
     condition = re.sub("and", "", str(cond))
-    cond_list = re.findall(r"[\w.\w]+[\w]|[\d.]+", condition)
+    cond_list = re.findall(r"[\w']+[.|\s][\w']+|[\w']+[\d']*|[\w']+[\w']", condition)
     L = []
     n = len(cond_list)
     for i in range(0, n - 1, 2):
@@ -214,9 +217,6 @@ class JoinTask(RelAlgQueryTask):
         first_key = list_cond[0][0]
         table_name1 = first_key[:first_key.index(".")]
         second_key = list_cond[0][1]
-        print('-' * 100)
-        pprint(list_cond)
-        print('-' * 100)
         table_name2 = second_key[:second_key.index(".")]
         joint_list1, joint_list2 = [], []
         for e in L:
@@ -236,8 +236,6 @@ class JoinTask(RelAlgQueryTask):
                     res = json.dumps(d)
                     yield ('joint1', res)
 
-        ''' ...................... fill in your code above ........................'''
-
 
 class SelectTask(RelAlgQueryTask):
 
@@ -250,26 +248,20 @@ class SelectTask(RelAlgQueryTask):
     def mapper(self, line):
         relation, tuple = line.split('\t')
         json_tuple = json.loads(tuple)
-
         ra = radb.parse.one_statement_from_string(self.querystring)
         ra = clean_select(ra)
         condition = ra.cond
 
-        ''' ...................... fill in your code below ........................'''
-        relation_test = get_table(ra)
-        if relation == relation_test:
-            first_key = list(json_tuple.keys())[0]
-            table_name = first_key[:first_key.index(".")]
-            cond_list = extract_cond(table_name, condition)
-            test = True
-            for c1, c2 in cond_list:
-                if str(json_tuple[c1]) != c2:
-                    test = False
-                    break
-            if test:
-                yield (relation, tuple)
-
-    ''' ...................... fill in your code above ........................'''
+        first_key = list(json_tuple.keys())[0]
+        table_name = first_key[:first_key.index(".")]
+        cond_list = extract_cond(table_name, condition)
+        test = True
+        for c1, c2 in cond_list:
+            if not cmp(str(json_tuple[c1]), c2):
+                test = False
+                break
+        if test:
+            yield (relation, tuple)
 
 
 class RenameTask(RelAlgQueryTask):
@@ -294,10 +286,6 @@ class RenameTask(RelAlgQueryTask):
             d = {x: y for x, y in zip(new_key_list, values_list)}
             res = json.dumps(d)
             yield (relation, res)
-
-        ''' ...................... fill in your code below ........................'''
-
-        ''' ...................... fill in your code above ........................'''
 
 
 class ProjectTask(RelAlgQueryTask):
@@ -324,17 +312,11 @@ class ProjectTask(RelAlgQueryTask):
         if len(d) != 0:
             res = json.dumps(d)
             yield (relation, res)
-        ''' ...................... fill in your code below ........................'''
-
-        ''' ...................... fill in your code above ........................'''
 
     def reducer(self, key, values):
-        ''' ...................... fill in your code below ........................'''
         new_values = set(values)
         for e in new_values:
             yield (key, e)
-
-        ''' ...................... fill in your code above ........................'''
 
 
 if __name__ == '__main__':

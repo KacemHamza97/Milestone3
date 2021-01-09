@@ -3,23 +3,17 @@ import radb
 import radb.ast
 import radb.parse
 
-dd = {}
-dd["Person"] = {"name": "string", "age": "integer", "gender": "string"}
-dd["Eats"] = {"name": "string", "pizza": "string"}
-dd["Serves"] = {"pizzeria": "string", "pizza": "string", "price": "integer"}
-
-
-stmt = "\select_{(((Person.name = Eats.name) and (Eats.pizza = Serves.pizza)) and (Person.age = 16)) and" \
-       " (Serves.pizzeria = 'Little Ceasars')} ((Person \cross Eats) \cross Serves);"
-
-# stmt_result = "Person \join_{Person.name = Eats.name and Person.name = Eats.pizza} \select_{Eats.name = 'Amy'} Eats;"
-ra = radb.parse.one_statement_from_string(stmt)
-
-# ra_result = radb.parse.one_statement_from_string(stmt_result)
-# print(ra_result)
-# print('-' * 100)
-# print(ra)
-# print(' ')
+# dd = {}
+# dd["Person"] = {"name": "string", "age": "integer", "gender": "string"}
+# dd["Eats"] = {"name": "string", "pizza": "string"}
+# dd["Serves"] = {"pizzeria": "string", "pizza": "string", "price": "integer"}
+# dd["Frequents"] = {"name": "string", "pizzeria": "string"}
+# #
+# stmt = "\project_{P.name, S.pizzeria} (\select_{((P.name = E.name) and (E.pizza = S.pizza)) " \
+#        "and (E.pizza = 'mushroom')} (((\\rename_{P: *} Person) \cross (\\rename_{E: *} Eats)) " \
+#        "\cross (\\rename_{S: *} Serves)));"
+#
+# ra = radb.parse.one_statement_from_string(stmt)
 
 
 def select_number(ra):
@@ -139,7 +133,7 @@ def remaining_select(select_list):
 def is_neither(s):
     """used to extract select_conditions that are not pushed_down and that
         are not used in push_step1 and push_step2 functions"""
-    return isinstance(s.inputs[0], radb.ast.AttrRef) and isinstance(s.inputs[1], radb.ast.AttrRef)
+    return isinstance(s.inputs[0], radb.ast.AttrRef) and isinstance(s.inputs[1], radb.ast.AttrRef) and str(s).count('.')==2
 
 
 def replace(table, remaining_list, dd):
@@ -244,7 +238,8 @@ def push_down_rule_selection(ra, dd):
     elif len(remaining_s_list) != 0 and len(s_cond_list) == 0 and len(rest) != 0:
         return select_rest(rest, push_step2(remaining_s_list, cross_list, dd))
     elif len(remaining_s_list) != 0 and len(s_cond_list) != 0 and len(rest) == 0:
-        return push_step3(s_cond_list, remaining_s_list, cross_list, dd)
+        res = push_step3(s_cond_list, remaining_s_list, cross_list, dd)
+        return res
     elif len(remaining_s_list) != 0 and len(s_cond_list) != 0 and len(rest) != 0:
         return swap(select_rest(rest, push_step3(s_cond_list, remaining_s_list, cross_list, dd)))
 
@@ -311,13 +306,13 @@ def rule_break_up_selections(ra):
 
 def rule_push_down_selections(ra, dd):
     """push_down selections function """
-    dd["Frequents"] = {}
     if isinstance(ra, radb.ast.RelRef):
         return ra
     if cross_number(ra) == 0:
         return ra
     elif isinstance(ra, radb.ast.Project):
-        return radb.ast.Project(ra.attrs, push_down_rule_selection(ra.inputs[0], dd))
+        res = radb.ast.Project(ra.attrs, push_down_rule_selection(ra.inputs[0], dd))
+        return res
     elif isinstance(ra, radb.ast.Select):
         return push_down_rule_selection(ra, dd)
     else:
@@ -356,17 +351,15 @@ def rule_introduce_joins(ra):
     else:
         return joint_r(ra)
 
-
-#### Test ####
-print('-' * 100)
-b = rule_break_up_selections(ra)
-print(b)
-print('-' * 100)
-p = rule_push_down_selections(b, dd)
-print(p)
-print('-' * 100)
-m = rule_merge_selections(p)
-print(m)
-print('-' * 100)
-L = rule_introduce_joins(m)
-print(L)
+# print('-' * 100)
+# b = rule_break_up_selections(ra)
+# print(b)
+# print('-' * 100)
+# p = rule_push_down_selections(b, dd)
+# print(p)
+# print('-' * 100)
+# m = rule_merge_selections(p)
+# print(m)
+# print('-' * 100)
+# L = rule_introduce_joins(m)
+# print(L)
