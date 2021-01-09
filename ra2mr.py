@@ -21,16 +21,12 @@ def extract_tabname_record(json_tuple):
     return first_key[:first_key.index(".")]
 
 
-def extract_cond_joint(cond, L):
+def extract_cond_joint(cond):
     """" returns a list L of condition """
-    if L is None:
-        L = []
-    if isinstance(cond.inputs[0], radb.ast.AttrRef) and str(cond).count('.') == 2:
-        return L.insert(0, (str(cond.inputs[0]), str(cond.inputs[1])))
-    else:
-        if str(cond.inputs[1]).count('.') == 2:
-            L.insert(0, (str(cond.inputs[1].inputs[0]), str(cond.inputs[1].inputs[1])))
-        return extract_cond_joint(cond.inputs[0], L)
+    condition = re.sub("and", "", str(cond))
+    cond_list = re.findall(r"[\w.\w]+", condition)
+    n = len(cond_list)
+    return [(cond_list[i], cond_list[i + 1]) for i in range(0, n - 1, 2)]
 
 
 def sort_cond(term):
@@ -214,14 +210,14 @@ class JoinTask(RelAlgQueryTask):
         condition = raquery.cond
         L = [json.loads(e) for e in values]
         list_cond = []
-        extract_cond_joint(condition, list_cond)
+        list_cond = extract_cond_joint(condition)
         first_key = list_cond[0][0]
         table_name1 = first_key[:first_key.index(".")]
         second_key = list_cond[0][1]
-        # print('-' * 100)
-        # pprint(list_cond)
-        # print('-' * 100)
-        table_name2 = second_key[:second_key.index(".")]  # "eroor table_name2 = first_key[:second_key.index(".")] "
+        print('-' * 100)
+        pprint(list_cond)
+        print('-' * 100)
+        table_name2 = second_key[:second_key.index(".")]
         joint_list1, joint_list2 = [], []
         for e in L:
             if extract_tabname_record(e) == table_name2:
@@ -232,7 +228,7 @@ class JoinTask(RelAlgQueryTask):
             for e2 in joint_list2:
                 test = True
                 for c1, c2 in list_cond:
-                    if e1[c1] != e2[c2]:  # erooorrrr not always e1[c1] exists
+                    if e1[c1] != e2[c2]:
                         test = False
                         break
                 if test:
@@ -267,10 +263,9 @@ class SelectTask(RelAlgQueryTask):
             cond_list = extract_cond(table_name, condition)
             test = True
             for c1, c2 in cond_list:
-                if json_tuple.get(c1, False) is not False and str(json_tuple[c1]) != c2:
+                if str(json_tuple[c1]) != c2:
                     test = False
                     break
-
             if test:
                 yield (relation, tuple)
 

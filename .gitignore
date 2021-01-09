@@ -133,3 +133,4 @@ dmypy.json
 .pytest_cache
 test_local_select.py
 test_local_project.py
+luigi.cfg
