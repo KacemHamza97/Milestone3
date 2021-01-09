@@ -95,12 +95,12 @@ class End2EndUnitTests(unittest.TestCase):
         computed = self._evaluate(sqlstring)
         self.assertEqual(len(computed), 8)
 
-    # def test_person_join_eats_join_serves_where(self):
-    #     sqlstring = "select distinct * from Person, Eats, Serves " \
-    #                 "where Person.name = Eats.name and Eats.pizza = Serves.pizza " \
-    #                 "and Person.age = 16 and Serves.pizzeria = 'Little Ceasars'"
-    #     computed = self._evaluate(sqlstring)
-    #     self.assertEqual(len(computed), 2)
+    def test_person_join_eats_join_serves_where(self):
+        sqlstring = "select distinct * from Person, Eats, Serves " \
+                    "where Person.name = Eats.name and Eats.pizza = Serves.pizza " \
+                    "and Person.age = 16 and Serves.pizzeria = 'Little Ceasars'"
+        computed = self._evaluate(sqlstring)
+        self.assertEqual(len(computed), 2)
 
     def test_eats_join_eats(self):
         sqlstring = "select distinct A.name, B.name from Eats A, Eats B where A.pizza = B.pizza"
