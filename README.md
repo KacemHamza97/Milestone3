@@ -16,7 +16,7 @@ The unit tests set the task parameter exec_environment to MOCK. All files are th
 kept in main memory only. This is intended for unit testing.
 
 ### Steps for setting up the Claudera VM:
-prestep for linux users: fixing problem of the ......
+0- teps for linux users for fixing problem of the ......<br>
 1- Change the keyboard layout by running the command: setxkbmap us <br>
 To do this automatically every time, extend your .bashrc with the command: echo "setxkbmap us" >> ~/.bashrc<br>
 
