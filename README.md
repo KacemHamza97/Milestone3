@@ -15,12 +15,12 @@ pytest ra2mr.py. <br>
 The unit tests set the task parameter exec_environment to MOCK. All files are then
 kept in main memory only. This is intended for unit testing.
 
-### steps for setting up the Claudera VM:
+### Steps for setting up the Claudera VM:
 1- Change the keyboard layout by running the command: ... <br>
 2- Mount a shared folder so that we can easily share data: link ....<br>
 3- Open a terminal. we’ll need a more modern Python version and some extra modules.<br>
-Download Python 3.6:<br>
-<p>wget https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tar.xz</p><br>
+#### Download Python 3.6:
+wget https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tar.xz<br>
 xz -d Python-3.6.5.tar.xz<br>
 tar -xvf Python-3.6.5.tar<br>
 cd Python-3.6.5<br>
@@ -30,11 +30,11 @@ make<br>
 sudo make altinstall<br>
 cd ..<br>
 sudo rm -rf Python*<br>
-Install PIP <br>
+#### Install PIP
 wget https://bootstrap.pypa.io/get-pip.py<br>
 sudo /usr/local/bin/python3.6 get-pip.py<br>
 rm -f get-pip.py<br>
-Install further modules that we will need <br>
+#### Install further modules that we will need <br>
 sudo /usr/local/bin/python3.6 -m pip install luigi<br>
 sudo /usr/local/bin/python3.6 -m pip install sqlparse<br>
 sudo /usr/local/bin/python3.6 -m pip install radb<br>
