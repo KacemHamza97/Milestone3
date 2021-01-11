@@ -23,7 +23,7 @@ sudo apt-get upgrade<br>
 sudo apt-get install mokutil<br>
 #### Generate the signature file:
 openssl req -new -x509 -newkey rsa:2048 -keyout MOK.priv -outform DER -out MOK.der -nodes -days 36500 -subj "/CN=VirtualBox/"
-#### add it to the kernel:
+#### Add it to the kernel:
 sudo /usr/src/linux-headers-$(uname -r)/scripts/sign-file sha256 ./MOK.priv ./MOK.der $(modinfo -n vboxdrv)
 #### Register it for the Secure Boot. 
 IMPORTANT! That will ask you for a password, put the one you want, you will only have to use it once in the next reboot.<br>
@@ -33,7 +33,8 @@ Enroll MOK -> Continue ->, and it will ask you for the password, and it's done.
 ### Steps for setting up the Claudera VM:
 1- Change the keyboard layout by running the command: setxkbmap fr <br>
 To do this automatically every time, extend your .bashrc with the command: echo "setxkbmap us" >> ~/.bashrc<br>
-2- Mount a shared folder so that we can easily share data between the host machine, and the virtual machine: link ....<br>
+2- Mount a shared folder so that we can easily share data between the host machine, and the virtual machine:<br>
+<a href="https://www.youtube.com/watch?v=_VF8vbUQWX0"> Link >> </a><br>
 3- Open a terminal. we’ll need a more modern Python version and some extra modules.
 #### Download Python 3.6:
 wget https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tar.xz<br>
