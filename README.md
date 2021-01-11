@@ -31,11 +31,13 @@ sudo mokutil --import MOK.der
 #### Finally, restart the computer.
 Enroll MOK -> Continue ->, and it will ask you for the password, and it's done.
 ### Steps for setting up the Claudera VM:
-1- Change the keyboard layout by running the command: setxkbmap fr <br>
+
+1- Download the Cloudera VM: <a href="https://www.cloudera.com/downloads/quickstart_vms/5-13/config.html"> Link >></a><br> 
+2- Change the keyboard layout by running the command: setxkbmap fr <br>
 To do this automatically every time, extend your .bashrc with the command: echo "setxkbmap us" >> ~/.bashrc<br>
-2- Mount a shared folder so that we can easily share data between the host, and the virtual machine: 
+3- Mount a shared folder so that we can easily share data between the host, and the virtual machine: 
 <a href="https://www.youtube.com/watch?v=_VF8vbUQWX0"> Link >> </a><br>
-3- Open a terminal. we’ll need a more modern Python version and some extra modules.
+4- Open a terminal. we’ll need a more modern Python version and some extra modules.
 #### Download Python 3.6:
 wget https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tar.xz<br>
 xz -d Python-3.6.5.tar.xz<br>
