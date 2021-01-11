@@ -61,7 +61,7 @@ sudo /usr/local/bin/python3.6 -m pip install pytest-repeat<br>
 sudo /usr/local/bin/python3.6 -m pip uninstall -y antlr4-python3-runtime<br>
 sudo /usr/local/bin/python3.6 -m pip install antlr4-python3-runtime==4.7<br>
 ### Useful links: <br>
-<p>Python yield usage and concept:
-<a href="https://dzone.com/articles/when-to-use-yield-instead-of-return-in-python"> Link >> </a></p>
-<p>To understand well the concept of mapreduce we can have a look at the chapter on “Workflow Systems” for MapReduce engines in chapter 2.4.1 of the
-book “Mining Massive Datasets”</p>
+Python yield usage and concept:
+<a href="https://dzone.com/articles/when-to-use-yield-instead-of-return-in-python"> Link >> </a><br>
+To understand well the concept of mapreduce we can have a look at the chapter on “Workflow Systems” for MapReduce engines in chapter 2.4.1 of the
+book “Mining Massive Datasets”.
