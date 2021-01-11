@@ -5,9 +5,9 @@ Python luigi module: which is a workflow engine that can execute MapReduce jobs 
 on hadoop (among many other things).
 
 We will use the following commands line to evaluate/execute a task
-### Locally:
+### Locally
 python3.6 ra2mr.py SelectTask --querystring "\select_{gender='female'} Person;" --exec-environment LOCAL --local-scheduler <br>
-### On hadoop:
+### On hadoop
 PYTHONPATH=. luigi --module ra2mr SelectTask --querystring "\select_{gender='female'} Person;"<br> --exec-environment HDFS --local-scheduler
 
 To execute tests locally, we will use the pytest module by running the command: pytest test_e2e.py or
@@ -30,11 +30,11 @@ make<br>
 sudo make altinstall<br>
 cd ..<br>
 sudo rm -rf Python*<br>
-#### Install PIP
+#### Install PIP:
 wget https://bootstrap.pypa.io/get-pip.py<br>
 sudo /usr/local/bin/python3.6 get-pip.py<br>
 rm -f get-pip.py<br>
-#### Install further modules that we will need <br>
+#### Install further modules that we will need:
 sudo /usr/local/bin/python3.6 -m pip install luigi<br>
 sudo /usr/local/bin/python3.6 -m pip install sqlparse<br>
 sudo /usr/local/bin/python3.6 -m pip install radb<br>
