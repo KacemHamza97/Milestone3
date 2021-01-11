@@ -110,3 +110,16 @@ def translate(stmt):
         return select(stmt_tokens, patters['from'])
     else:
         return project(patters['columns'], stmt_tokens, patters['from'])
+
+
+######### Test #########
+# stmt_result = "\select_{(age = 16) and (gender = 'f')} Person;"
+# ra_result = radb.parse.one_statement_from_string(stmt_result)
+#
+#
+# sql = "select distinct * from Person where Person.gender=Person.age"
+# stmt = sqlparse.parse(sql)[0]
+# ra = translate(stmt)
+# print('='*100)
+# print(ra)
+# print('='*100)
