@@ -9,7 +9,7 @@ We will use the following command line to evaluate or execute a task
 python3.6 ra2mr.py SelectTask --querystring "\select_{gender='female'} Person;" --exec-environment LOCAL --local-scheduler <br>
 ### Or alternatively on hadoop:
 PYTHONPATH=. luigi --module ra2mr SelectTask --querystring "\select_{gender='female'} Person;"<br> --exec-environment HDFS --local-scheduler
-# Useful links: <br>
+## Useful links: <br>
 <p>Python yield usage and concept:
 <a href="https://dzone.com/articles/when-to-use-yield-instead-of-return-in-python"> Link >> </a>
 </p>
