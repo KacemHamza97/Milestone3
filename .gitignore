@@ -131,7 +131,3 @@ dmypy.json
 .idea
 .DS_Store
 .pytest_cache
-test_local_select.py
-test_local_project.py
-luigi.cfg
-test_raopt.py

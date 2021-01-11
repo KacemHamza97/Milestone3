@@ -3,18 +3,6 @@ import radb
 import radb.ast
 import radb.parse
 
-# dd = {}
-# dd["Person"] = {"name": "string", "age": "integer", "gender": "string"}
-# dd["Eats"] = {"name": "string", "pizza": "string"}
-# dd["Serves"] = {"pizzeria": "string", "pizza": "string", "price": "integer"}
-# dd["Frequents"] = {"name": "string", "pizzeria": "string"}
-# #
-# stmt = "\project_{P.name, S.pizzeria} (\select_{((P.name = E.name) and (E.pizza = S.pizza)) " \
-#        "and (E.pizza = 'mushroom')} (((\\rename_{P: *} Person) \cross (\\rename_{E: *} Eats)) " \
-#        "\cross (\\rename_{S: *} Serves)));"
-#
-# ra = radb.parse.one_statement_from_string(stmt)
-
 
 def select_number(ra):
     return str(ra).count('\\select')
@@ -133,7 +121,8 @@ def remaining_select(select_list):
 def is_neither(s):
     """used to extract select_conditions that are not pushed_down and that
         are not used in push_step1 and push_step2 functions"""
-    return isinstance(s.inputs[0], radb.ast.AttrRef) and isinstance(s.inputs[1], radb.ast.AttrRef) and str(s).count('.')==2
+    return isinstance(s.inputs[0], radb.ast.AttrRef) and isinstance(s.inputs[1], radb.ast.AttrRef) and str(s).count(
+        '.') == 2
 
 
 def replace(table, remaining_list, dd):
@@ -191,8 +180,6 @@ def select_rest(rest_list, input):
         for i in range(1, len(rest_list)):
             res = radb.ast.Select(rest_list[i], res_input)
         return res
-
-
 
 
 def push_step1(s_cond_list, cross_list):
@@ -350,16 +337,3 @@ def rule_introduce_joins(ra):
         return radb.ast.Project(attrs=ra.attrs, input=joint_r(ra.inputs[0]))
     else:
         return joint_r(ra)
-
-# print('-' * 100)
-# b = rule_break_up_selections(ra)
-# print(b)
-# print('-' * 100)
-# p = rule_push_down_selections(b, dd)
-# print(p)
-# print('-' * 100)
-# m = rule_merge_selections(p)
-# print(m)
-# print('-' * 100)
-# L = rule_introduce_joins(m)
-# print(L)
