@@ -10,7 +10,7 @@ python3.6 ra2mr.py SelectTask --querystring "\select_{gender='female'} Person;" 
 ### On hadoop:
 PYTHONPATH=. luigi --module ra2mr SelectTask --querystring "\select_{gender='female'} Person;"<br> --exec-environment HDFS --local-scheduler
 
-To execute the tests locally,we will use the pytest module by running the command: pytest test_e2e.py or
+To execute tests locally, we will usefor that the pytest module by running the command: pytest test_e2e.py or
 pytest ra2mr.py.
 
 ### Useful links: <br>
