@@ -17,6 +17,5 @@ pytest ra2mr.py.
 <p>Python yield usage and concept:
 <a href="https://dzone.com/articles/when-to-use-yield-instead-of-return-in-python"> Link >> </a>
 </p>
-
 <p>To understand well the concept of mapreduce we can have a look at the chapter on “Workflow Systems” for MapReduce engines in chapter 2.4.1 of the
 book “Mining Massive Datasets”</p>
