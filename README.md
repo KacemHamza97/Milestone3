@@ -17,7 +17,7 @@ kept in main memory only. This is intended for unit testing.
 
 ### Steps for setting up the Claudera VM:
 1- Change the keyboard layout by running the command: ... <br>
-2- Mount a shared folder so that we can easily share data: link ....<br>
+2- Mount a shared folder so that we can easily share data between the host machine, and the virtual machine: link ....<br>
 3- Open a terminal. we’ll need a more modern Python version and some extra modules.<br>
 #### Download Python 3.6:
 wget https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tar.xz<br>
