@@ -3,18 +3,15 @@ In the third milestone, we compile relational algebra queries into a physical qu
 MapReduce jobs.<br> The MapReduce jobs can then be executed directly on Hadoop by the intermediate of 
 Python luigi module: which is a workflow engine that can execute MapReduce jobs Locally or
 on hadoop (among many other things).
-
 We will use the following commands line to evaluate/execute a task
 ### Locally
 python3.6 ra2mr.py SelectTask --querystring "\select_{gender='female'} Person;" --exec-environment LOCAL --local-scheduler <br>
 ### On hadoop
 PYTHONPATH=. luigi --module ra2mr SelectTask --querystring "\select_{gender='female'} Person;"<br> --exec-environment HDFS --local-scheduler
-
 To execute tests locally, we will use the pytest module by running the command: pytest test_e2e.py or
 pytest ra2mr.py. <br>
 The unit tests set the task parameter exec_environment to MOCK. All files are then
 kept in main memory only. This is intended for unit testing.
-
 ### Steps for setting up the Claudera VM:
 0- teps for linux users for fixing problem of the ......<br>
 1- Change the keyboard layout by running the command: setxkbmap us <br>
@@ -44,9 +41,6 @@ sudo /usr/local/bin/python3.6 -m pip install pytest<br>
 sudo /usr/local/bin/python3.6 -m pip install pytest-repeat<br>
 sudo /usr/local/bin/python3.6 -m pip uninstall -y antlr4-python3-runtime<br>
 sudo /usr/local/bin/python3.6 -m pip install antlr4-python3-runtime==4.7<br>
-
-
-
 ### Useful links: <br>
 <p>Python yield usage and concept:
 <a href="https://dzone.com/articles/when-to-use-yield-instead-of-return-in-python"> Link >> </a>
