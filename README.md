@@ -13,7 +13,24 @@ pytest ra2mr.py. <br>
 The unit tests set the task parameter exec_environment to MOCK. All files are then
 kept in main memory only. This is intended for unit testing.
 ### Steps for setting up the Claudera VM:
-0- teps for linux users for fixing problem of the ......<br>
+0- steps for linux users for fixing VirtualBox problem<br>
+The problem is that the module is not signed and therefore not loaded with the kernel.<br>
+This will happen if your computer has the SecureBoot mode activated, something very common in modern equipment.
+That's why you'll get this error opening any machine in the virtual box (Kernel driver not installed (rc=-1908))<br>
+Do the following steps to sign a driver, and it is loaded as a kernel module, on Ubuntu systems and also on Debian 9:<br>
+#### Install the mkutil package to be able to do signed:
+sudo apt-get update<br>
+sudo apt-get upgrade<br>
+sudo apt-get install mokutil<br>
+#### Generate the signature file:
+openssl req -new -x509 -newkey rsa:2048 -keyout MOK.priv -outform DER -out MOK.der -nodes -days 36500 -subj "/CN=VirtualBox/"
+#### add it to the kernel:
+sudo /usr/src/linux-headers-$(uname -r)/scripts/sign-file sha256 ./MOK.priv ./MOK.der $(modinfo -n vboxdrv)
+#### Register it for the Secure Boot. 
+IMPORTANT! That will ask you for a password, put the one you want, you will only have to use it once in the next reboot.<br>
+sudo mokutil --import MOK.der
+#### Finally, restart the computer.
+Enroll MOK -> Continue ->, and it will ask you for the password, and it's done.<br>
 1- Change the keyboard layout by running the command: setxkbmap fr <br>
 To do this automatically every time, extend your .bashrc with the command: echo "setxkbmap us" >> ~/.bashrc<br>
 2- Mount a shared folder so that we can easily share data between the host machine, and the virtual machine: link ....<br>
