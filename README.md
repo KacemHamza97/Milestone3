@@ -12,8 +12,7 @@ To execute tests locally, we will use the pytest module by running the command: 
 pytest ra2mr.py. <br>
 The unit tests set the task parameter exec_environment to MOCK. All files are then
 kept in main memory only. This is intended for unit testing.
-### Steps for setting up the Claudera VM:
-0- Fixing VirtualBox problem for linux users<br>
+### Fixing VirtualBox problem for linux users<br>
 The problem is that the module is not signed and therefore not loaded with the kernel.<br>
 This will happen if your computer has the SecureBoot mode activated, something very common in modern equipment.
 That's why you'll get this error opening any machine in the virtual box (Kernel driver not installed (rc=-1908))<br>
@@ -30,7 +29,8 @@ sudo /usr/src/linux-headers-$(uname -r)/scripts/sign-file sha256 ./MOK.priv ./MO
 IMPORTANT! That will ask you for a password, put the one you want, you will only have to use it once in the next reboot.<br>
 sudo mokutil --import MOK.der
 #### Finally, restart the computer.
-Enroll MOK -> Continue ->, and it will ask you for the password, and it's done.<br>
+Enroll MOK -> Continue ->, and it will ask you for the password, and it's done.
+### Steps for setting up the Claudera VM:
 1- Change the keyboard layout by running the command: setxkbmap fr <br>
 To do this automatically every time, extend your .bashrc with the command: echo "setxkbmap us" >> ~/.bashrc<br>
 2- Mount a shared folder so that we can easily share data between the host machine, and the virtual machine: link ....<br>
