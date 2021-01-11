@@ -4,9 +4,9 @@ MapReduce jobs.<br> The MapReduce jobs can then be executed directly on Hadoop b
 Python luigi module: which is a workflow engine that can execute MapReduce jobs Locally or
 on hadoop (among many other things).
 We will use the following commands line to evaluate/execute a task
-### Locally
+#### Locally
 python3.6 ra2mr.py SelectTask --querystring "\select_{gender='female'} Person;" --exec-environment LOCAL --local-scheduler <br>
-### On hadoop
+#### On hadoop
 PYTHONPATH=. luigi --module ra2mr SelectTask --querystring "\select_{gender='female'} Person;"<br> --exec-environment HDFS --local-scheduler
 To execute tests locally, we will use the pytest module by running the command: pytest test_e2e.py or
 pytest ra2mr.py. <br>
