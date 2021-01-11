@@ -337,3 +337,30 @@ def rule_introduce_joins(ra):
         return radb.ast.Project(attrs=ra.attrs, input=joint_r(ra.inputs[0]))
     else:
         return joint_r(ra)
+
+
+######### Test #########
+# dd = {}
+# dd["Person"] = {"name": "string", "age": "integer", "gender": "string"}
+# dd["Eats"] = {"name": "string", "pizza": "string"}
+# dd["Serves"] = {"pizzeria": "string", "pizza": "string", "price": "integer"}
+# dd["Frequents"] = {"name": "string", "pizzeria": "string"}
+# #
+# stmt = "\project_{P.name, S.pizzeria} (\select_{((P.name = E.name) and (E.pizza = S.pizza)) " \
+#        "and (E.pizza = 'mushroom')} (((\\rename_{P: *} Person) \cross (\\rename_{E: *} Eats)) " \
+#        "\cross (\\rename_{S: *} Serves)));"
+#
+# ra = radb.parse.one_statement_from_string(stmt)
+
+# print('-' * 100)
+# b = rule_break_up_selections(ra)
+# print(b)
+# print('-' * 100)
+# p = rule_push_down_selections(b, dd)
+# print(p)
+# print('-' * 100)
+# m = rule_merge_selections(p)
+# print(m)
+# print('-' * 100)
+# L = rule_introduce_joins(m)
+# print(L)
