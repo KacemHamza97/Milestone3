@@ -7,7 +7,7 @@ We will use the following commands line to evaluate/execute a task
 #### Locally
 python3.6 ra2mr.py SelectTask --querystring "\select_{gender='female'} Person;" --exec-environment LOCAL --local-scheduler <br>
 #### On hadoop
-PYTHONPATH=. luigi --module ra2mr SelectTask --querystring "\select_{gender='female'} Person;"<br> --exec-environment HDFS --local-scheduler
+PYTHONPATH=. luigi --module ra2mr SelectTask --querystring "\select_{gender='female'} Person;"<br> --exec-environment HDFS --local-scheduler<br>
 To execute tests locally, we will use the pytest module by running the command: pytest test_e2e.py or
 pytest ra2mr.py. <br>
 The unit tests set the task parameter exec_environment to MOCK. All files are then
