@@ -33,7 +33,7 @@ Enroll MOK -> Continue ->, and it will ask you for the password, and it's done.
 ### Steps for setting up the Claudera VM:
 1- Change the keyboard layout by running the command: setxkbmap fr <br>
 To do this automatically every time, extend your .bashrc with the command: echo "setxkbmap us" >> ~/.bashrc<br>
-2- Mount a shared folder so that we can easily share data between the host machine, and the virtual machine: 
+2- Mount a shared folder so that we can easily share data between the host, and the virtual machine: 
 <a href="https://www.youtube.com/watch?v=_VF8vbUQWX0"> Link >> </a><br>
 3- Open a terminal. we’ll need a more modern Python version and some extra modules.
 #### Download Python 3.6:
