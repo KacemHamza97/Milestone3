@@ -17,7 +17,10 @@ kept in main memory only. This is intended for unit testing.
 
 ### Steps for setting up the Claudera VM:
 prestep for linux users: fixing problem of the ......
-1- Change the keyboard layout by running the command: ... <br>
+1- Change the keyboard layout by running the command: setxkbmap us <br>
+To do this automatically every time, extend your .bashrc with the command: echo "setxkbmap us" >> ~/.bashrc<br>
+
+
 2- Mount a shared folder so that we can easily share data between the host machine, and the virtual machine: link ....<br>
 3- Open a terminal. we’ll need a more modern Python version and some extra modules.<br>
 #### Download Python 3.6:
