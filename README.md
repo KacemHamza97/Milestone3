@@ -31,7 +31,6 @@ sudo mokutil --import MOK.der
 #### Finally, restart the computer.
 Enroll MOK -> Continue ->, and it will ask you for the password, and it's done.
 ### Steps for setting up the Claudera VM:
-
 1- Download the Cloudera VM: <a href="https://www.cloudera.com/downloads/quickstart_vms/5-13/config.html"> Link >></a><br> 
 2- Change the keyboard layout by running the command: setxkbmap fr <br>
 To do this automatically every time, extend your .bashrc with the command: echo "setxkbmap us" >> ~/.bashrc<br>
