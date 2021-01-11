@@ -13,7 +13,7 @@ pytest ra2mr.py. <br>
 The unit tests set the task parameter exec_environment to MOCK. All files are then
 kept in main memory only. This is intended for unit testing.
 ### Steps for setting up the Claudera VM:
-0- steps for linux users for fixing VirtualBox problem<br>
+0- Fixing VirtualBox problem for linux users<br>
 The problem is that the module is not signed and therefore not loaded with the kernel.<br>
 This will happen if your computer has the SecureBoot mode activated, something very common in modern equipment.
 That's why you'll get this error opening any machine in the virtual box (Kernel driver not installed (rc=-1908))<br>
