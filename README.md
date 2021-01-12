@@ -43,7 +43,7 @@ xz -d Python-3.6.5.tar.xz<br>
 tar -xvf Python-3.6.5.tar<br>
 cd Python-3.6.5<br>
 ./configure --prefix=/usr/local
-4- Let's build (compile) the source, this can take a while<br>
+#### Let's build (compile) the source, this can take a while<br>
 make<br>
 sudo make altinstall<br>
 cd ..<br>
